@@ -5,6 +5,8 @@
  */
 package frontend;
 
+import java.awt.event.WindowEvent;
+
 /**
  *
  * @author Apurv Singh <apurv@cgossip.in>
@@ -14,8 +16,21 @@ public class Login extends javax.swing.JFrame {
     /**
      * Creates new form Login
      */
+     Connector con;
     public Login() {
         initComponents();
+        con=new Connector();
+        con.setConnection();
+    }
+    boolean isUserValid(String username,String password){
+        System.out.println(username+" "+password);
+        String tmp=con.setTable("select username from alluser where username='"+username+"' and password='"+password+"'");
+        System.out.println(tmp);
+        jLabel4.setText("");
+        if(tmp.length()>0){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -33,6 +48,7 @@ public class Login extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jPasswordField1 = new javax.swing.JPasswordField();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -41,11 +57,14 @@ public class Login extends javax.swing.JFrame {
         jLabel2.setText("Password");
 
         jButton1.setText("Login");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel3.setText("Database Facilitator");
-
-        jPasswordField1.setText("jPasswordField1");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -63,7 +82,9 @@ public class Login extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addGap(18, 18, 18)
-                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(271, 271, 271)
                         .addComponent(jButton1))
@@ -84,7 +105,8 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
                 .addContainerGap(158, Short.MAX_VALUE))
@@ -92,6 +114,20 @@ public class Login extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        String passText = new String(jPasswordField1.getPassword());
+        if(isUserValid(jTextField1.getText().toString(),passText)){
+            Main m=new Main();
+            m.setVisible(true);
+            this.setVisible(false);
+           // this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+        }
+        else{
+            jLabel4.setText("*Wrong Credentials");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -133,6 +169,7 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables

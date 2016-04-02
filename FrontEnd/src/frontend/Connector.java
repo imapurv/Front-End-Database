@@ -6,6 +6,8 @@
 
 package frontend;
 import java.sql.*;  
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Apurv Singh <apurv@cgossip.in>
@@ -22,22 +24,48 @@ public class Connector {
         try{  
          Class.forName("oracle.jdbc.driver.OracleDriver");  
 
-         con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","scott","tiger"); 
+         
          Statement stmt=con.createStatement();  
 
         }
         catch(Exception e){ System.out.println(e);} 
     }
-    String fire(String input){
-       
+    ResultSet fire(String input){
+       ResultSet resultSet = null;
+        
+            
+            
+            String output = "";
+            try{
+                con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","scott","tiger"); 
+                Statement stmt=con.createStatement();
+                resultSet= stmt.executeQuery(input);
+                
+                System.out.println("Here "+resultSet.getMetaData().getColumnCount());
+                
+                
+            }catch(Exception e){ System.out.println(e);}
+            
+            
+            
+     
+        
+        return resultSet;
+    
+    }
+    String setTable(String input){
+      
         String output = "";
         try{ 
+            con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","scott","tiger"); 
             Statement stmt=con.createStatement();
             ResultSet resultSet = stmt.executeQuery(input);
             ResultSetMetaData rsmd = resultSet.getMetaData();
             int columnsNumber = rsmd.getColumnCount();
+            String col="";
             while (resultSet.next()) {
                 for (int i = 1; i <= columnsNumber; i++) {
+                    col+=rsmd.getColumnName(i)+" ";
                     if (i > 1) System.out.print(",  ");
                     String columnValue = resultSet.getString(i);
                     output+=columnValue+" ";
@@ -46,7 +74,8 @@ public class Connector {
                 output+="\n";
                 System.out.println("");
             }
-            con.close();  
+           // output=col+"/n"+output;
+            
         
         }catch(Exception e){ System.out.println(e);} 
         return output;
