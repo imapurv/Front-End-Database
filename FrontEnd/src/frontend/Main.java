@@ -23,6 +23,8 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -38,16 +40,57 @@ public class Main extends javax.swing.JFrame {
     JTable jt;
     ArrayList<JCheckBox> param;
     Connector con;
-    String user="asmac";
+    String user;
     TableModel tb;
-    public Main() {
+    public Main(int f,String user) {
         initComponents();
+        this.user=user;
+        if(f==1){
+            bg=new ButtonGroup();
+            con=new Connector();
+            con.setConnection();
+            bg.add(colwise);
+            bg.add(selectall);
+            setTable();
+            jTabbedPane1.setEnabledAt(1, false);
+            jTabbedPane1.setEnabledAt(2, false);
+            fired.getDocument().addDocumentListener(new DocumentListener() {
+
+                @Override
+                public void insertUpdate(DocumentEvent e) {
+                   // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+                }
+
+                @Override
+                public void removeUpdate(DocumentEvent e) {
+                 Runnable doHighlight = new Runnable() {
+                 @Override
+                 public void run() {
+                         if(fired.getText().toString().length()<=6&&!fired.getText().toString().equals("select")){
+                                 fired.setText("select");
+                    
+                            }
+                         }
+                };       
+                SwingUtilities.invokeLater(doHighlight);
+                    
+                }
+
+                @Override
+                public void changedUpdate(DocumentEvent e) {
+                    
+                }
+            });
+        }
+        else{
         bg=new ButtonGroup();
         con=new Connector();
         con.setConnection();
         bg.add(colwise);
         bg.add(selectall);
         setTable();
+        }
+        
        // selectTab();
         
        
@@ -55,7 +98,7 @@ public class Main extends javax.swing.JFrame {
     }
     void setTable(){
             jComboBox1.removeAllItems();
-            String tmp=con.setTable("select tablename from owner where username='asmac'");
+            String tmp=con.setTable("select tablename from owner where username='"+user+"'");
             //jTextArea1.setText(tmp);
             //  makeTable(tmp);
             String[] tmps=tmp.split("\n");
@@ -313,6 +356,12 @@ public class Main extends javax.swing.JFrame {
                 .addComponent(jButton1))
         );
 
+        fired.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                firedActionPerformed(evt);
+            }
+        });
+
         jLabel5.setText("Fired Query :");
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
@@ -481,6 +530,10 @@ public class Main extends javax.swing.JFrame {
         ResultSet tmp=con.fire(fired.getText().toString().replace(';', ' '));
         makeTable(tmp);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void firedActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_firedActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_firedActionPerformed
     void selectTab(){
         if(selectall.isSelected()){
             System.out.println(jComboBox1.getSelectedItem().toString());
@@ -537,7 +590,7 @@ public class Main extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Main().setVisible(true);
+                new Main(1,"asmac").setVisible(true);
             }
         });
     }
