@@ -26,9 +26,11 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
@@ -52,6 +54,15 @@ public class Main extends javax.swing.JFrame {
     String user;
     TableModel tb;
     ArrayList<Map.Entry<JTextField,JComboBox>> creater;
+    ArrayList<Map.Entry<JLabel,JTextField>> inserter;
+    JButton jb;
+    Box boxi = Box.createHorizontalBox();
+    JPanel ji;
+    JPanel ju;
+    JComboBox ucb;
+    JTextArea ua = new JTextArea();
+    JTextField ut = new JTextField();
+    
     public Main(int f,String user) {
         initComponents();
         this.user=user;
@@ -93,38 +104,99 @@ public class Main extends javax.swing.JFrame {
             });
         }
         else{
-        bg=new ButtonGroup();
-        con=new Connector();
-        creater=new ArrayList<>();
-        con.setConnection();
-        bg.add(colwise);
-        bg.add(selectall);
-        setTable();
-        GridLayout layout = new GridLayout(10,2);
-        layout.setHgap(3);
-        layout.setVgap(3);
-        jpp=new JPanel();
-        jpp.setLayout(layout);
-        JComboBox jbt=new JComboBox();
-        jbt.addItem("VARCHAR2(10)");
-        jbt.addItem("NUMBER(10,2)");
-        jbt.addItem("DATE");
-        JTextField tf=new JTextField();
-        boxc=Box.createHorizontalBox();
-        boxc.add(tf);
-        //boxc.
-        boxc.add(jbt);
-        jpp.add(boxc);
-        jScrollPane10.setViewportView(jpp);
-       
-        creater.add(new AbstractMap.SimpleEntry<>(tf,jbt));
+            bg=new ButtonGroup();
+            con=new Connector();
+            creater=new ArrayList<>();
+            inserter = new ArrayList<>();
+            con.setConnection();
+            bg.add(colwise);
+            bg.add(selectall);
+            setTable();
+            GridLayout layout = new GridLayout(10,2);
+            layout.setHgap(3);
+            layout.setVgap(3);
+            jpp=new JPanel();
+            jpp.setLayout(layout);
+            JComboBox jbt=new JComboBox();
+            jbt.addItem("VARCHAR2(10)");
+            jbt.addItem("NUMBER(10,2)");
+            jbt.addItem("DATE");
+            JTextField tf=new JTextField();
+            boxc=Box.createHorizontalBox();
+            boxc.add(tf);
+            //boxc.
+            boxc.add(jbt);
+            jpp.add(boxc);
+            jScrollPane10.setViewportView(jpp);
+            creater.add(new AbstractMap.SimpleEntry<>(tf,jbt));
+            insertView();
+            updateView();
         }
         
        // selectTab();
-        
-       
-   
+           
     }
+    
+    void insertView() {                                         
+        // TODO add your handling code here:
+        
+        try {
+            // TODO add your handling code here:
+            ResultSet rs=con.fire("select * from "+jComboBox1.getSelectedItem().toString());
+            ResultSetMetaData metaData = rs.getMetaData();
+            Vector<String> columnNames = new Vector<String>();
+            int columnCount = metaData.getColumnCount();
+            //Box box = Box.createHorizontalBox();
+            //internal.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            //internal.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            //  internal.setViewportBorder(new LineBorder(Color.RED));
+            for (int column = 1; column <= columnCount; column++) {
+                
+                JLabel jbi = new JLabel();
+                jbi.setText(metaData.getColumnName(column));
+                JTextField jti = new JTextField();
+                boxi = Box.createHorizontalBox();
+                boxi.add(jbi);
+                boxi.add(jti);
+                
+                ji.add(boxi);
+                jScrollPane5.setViewportView(ji);
+                
+                inserter.add(new AbstractMap.SimpleEntry<>(jbi,jti));
+                //param.add(new JCheckBox(metaData.getColumnName(column)));
+               // box.add(param.get(column-1), null);
+                // columnNames.add();
+            }
+           // internal.getViewport().add(box);
+        } catch (SQLException ex) {
+            Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+    } 
+    
+    void updateView(){
+        
+        ucb.removeAllItems();
+        String tmp=con.setTable("select * from " + jComboBox1.getSelectedItem().toString());
+        //jTextArea1.setText(tmp);
+        //  makeTable(tmp);
+        String[] tmps=tmp.split("\n");
+        for(int i=0;i<tmps.length;i++){
+            ucb.addItem(tmps[i]);
+        }
+        
+        JLabel ub = new JLabel();
+        ub.setText("Filter Clause  *without ';'");
+        
+        Box bu = Box.createHorizontalBox();
+        bu.add(ucb);
+        bu.add(ut);
+        ju.add(bu);
+        ju.add(ub);
+        ju.add(ua);
+        
+    }
+    
     void setTable(){
             jComboBox1.removeAllItems();
             String tmp=con.setTable("select tablename from owner where username='"+user+"'");
@@ -617,9 +689,9 @@ public class Main extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(status))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(status, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel5))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fired, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -710,7 +782,10 @@ public class Main extends javax.swing.JFrame {
         switch(selIndex){
             case 0 : createTab();
                      break;
-            
+            case 1 : insertTab();
+                     break;
+            case 2 : updateTab();
+                     break;
             default : System.out.println("Default");
         }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -735,10 +810,55 @@ public class Main extends javax.swing.JFrame {
        con.setTable(query);
        status.setText("Table Created");
        System.out.println(query);
-       
-       
-           
+     
     }
+    
+    private void insertTab() {
+       String query="insert into "+jComboBox1.getSelectedItem().toString()+" values (";
+       for(int i=0;i<inserter.size();i++){
+           Map.Entry<JLabel,JTextField> entry=inserter.get(i);
+           System.out.println(entry.getValue().toString() + " " +entry.getKey().getText().toString()  );
+           if(isNumeric(entry.getKey().getText().toString())){
+               query+=Integer.parseInt(entry.getKey().getText().toString())+",";
+           }
+           else
+               query+="'"+Integer.parseInt(entry.getKey().getText().toString())+"'"+",";
+        }
+       query=query.substring(0, query.length()-2);
+       query+=")";
+       fired.setText(query);
+       con.setTable(query);
+       status.setText("Values Inserted");
+       System.out.println(query);
+                  
+    }
+    
+    public static boolean isNumeric(String str)  
+    {  
+      try  
+      {  
+        double d = Double.parseDouble(str);  
+      }  
+      catch(NumberFormatException nfe)  
+      {  
+        return false;  
+      }  
+      return true;  
+    }
+    
+    void updateTab(){
+        String query = "Update "+jComboBox1.getSelectedItem().toString();
+        query+=" Set "+ucb.getSelectedItem().toString()+"=";
+        if(isNumeric(ut.getText().toString()))
+            query+=Integer.parseInt(ut.getText().toString());
+        else
+            query+=ut.getText().toString();
+        query+=ua.getText().toString();
+        fired.setText(query);
+        con.setTable(query);
+        status.setText("Table updated");
+    }    
+    
     void selectTab(){
         if(selectall.isSelected()){
             System.out.println(jComboBox1.getSelectedItem().toString());
