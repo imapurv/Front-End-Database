@@ -139,13 +139,18 @@ public class Main extends javax.swing.JFrame {
     
     void insertView() {                                         
         // TODO add your handling code here:
-        
+            GridLayout layout = new GridLayout(10,2);
+            layout.setHgap(3);
+            layout.setVgap(3);
         try {
             // TODO add your handling code here:
             ResultSet rs=con.fire("select * from "+jComboBox1.getSelectedItem().toString());
             ResultSetMetaData metaData = rs.getMetaData();
             Vector<String> columnNames = new Vector<String>();
             int columnCount = metaData.getColumnCount();
+            ji=new JPanel();
+            ji.setLayout(layout);
+            inserter.clear();
             //Box box = Box.createHorizontalBox();
             //internal.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             //internal.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -155,18 +160,20 @@ public class Main extends javax.swing.JFrame {
                 JLabel jbi = new JLabel();
                 jbi.setText(metaData.getColumnName(column));
                 JTextField jti = new JTextField();
+                jti.setSize(2, 1);
                 boxi = Box.createHorizontalBox();
                 boxi.add(jbi);
                 boxi.add(jti);
                 
                 ji.add(boxi);
-                jScrollPane5.setViewportView(ji);
+                
                 
                 inserter.add(new AbstractMap.SimpleEntry<>(jbi,jti));
                 //param.add(new JCheckBox(metaData.getColumnName(column)));
                // box.add(param.get(column-1), null);
                 // columnNames.add();
             }
+            insert.setViewportView(ji);
            // internal.getViewport().add(box);
         } catch (SQLException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -175,10 +182,11 @@ public class Main extends javax.swing.JFrame {
     } 
     
     void updateView(){
-        
+        ucb=new JComboBox();
         ucb.removeAllItems();
         String tmp=con.setTable("select * from " + jComboBox1.getSelectedItem().toString());
         //jTextArea1.setText(tmp);
+        ju=new JPanel();
         //  makeTable(tmp);
         String[] tmps=tmp.split("\n");
         for(int i=0;i<tmps.length;i++){
@@ -194,6 +202,7 @@ public class Main extends javax.swing.JFrame {
         ju.add(bu);
         ju.add(ub);
         ju.add(ua);
+        update.setViewportView(ju);
         
     }
     
@@ -302,11 +311,15 @@ public class Main extends javax.swing.JFrame {
         where = new javax.swing.JTextArea();
         internal = new javax.swing.JScrollPane();
         jScrollPane5 = new javax.swing.JScrollPane();
+        jPanel5 = new javax.swing.JPanel();
+        insert = new javax.swing.JScrollPane();
+        jButton5 = new javax.swing.JButton();
         jScrollPane6 = new javax.swing.JScrollPane();
+        jPanel6 = new javax.swing.JPanel();
+        update = new javax.swing.JScrollPane();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
         jButton1 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
         fired = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
@@ -365,6 +378,12 @@ public class Main extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setText("Dashboard");
 
+        jTabbedPane1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jTabbedPane1StateChanged(evt);
+            }
+        });
+
         selectall.setText("Select All");
 
         colwise.setText("Coloum Wise");
@@ -421,7 +440,62 @@ public class Main extends javax.swing.JFrame {
         jScrollPane4.setViewportView(jPanel1);
 
         jTabbedPane1.addTab("Select", jScrollPane4);
+
+        jScrollPane5.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane5.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        jButton5.setText("Refresh");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton5)
+                .addGap(29, 29, 29))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(31, 31, 31)
+                .addComponent(insert, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(insert, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+
+        jScrollPane5.setViewportView(jPanel5);
+
         jTabbedPane1.addTab("Insert", jScrollPane5);
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(37, 37, 37)
+                .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(37, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGap(30, 30, 30)
+                .addComponent(update, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(42, Short.MAX_VALUE))
+        );
+
+        jScrollPane6.setViewportView(jPanel6);
+
         jTabbedPane1.addTab("Update", jScrollPane6);
 
         jLabel1.setText("Table Name :");
@@ -437,13 +511,6 @@ public class Main extends javax.swing.JFrame {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton5.setText("Refresh");
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
             }
         });
 
@@ -464,19 +531,15 @@ public class Main extends javax.swing.JFrame {
                         .addGap(23, 23, 23)
                         .addComponent(jLabel1)
                         .addGap(18, 18, 18)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(26, 26, 26)
-                        .addComponent(jButton5)))
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 236, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -711,7 +774,10 @@ public class Main extends javax.swing.JFrame {
         switch(selIndex){
             case 0 : selectTab();
                      break;
-            
+             case 1 : insertTab();
+                     break;
+            case 2 : updateTab();
+                     break;
             default : System.out.println("Default");
         }
 
@@ -744,7 +810,7 @@ public class Main extends javax.swing.JFrame {
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         // TODO add your handling code here:
-        //setTable();
+       
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -782,18 +848,21 @@ public class Main extends javax.swing.JFrame {
         switch(selIndex){
             case 0 : createTab();
                      break;
-            case 1 : insertTab();
-                     break;
-            case 2 : updateTab();
-                     break;
+           
             default : System.out.println("Default");
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         // TODO add your handling code here:
-        setTable();
+       // setTable();
+        insertView();
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jTabbedPane1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jTabbedPane1StateChanged
+        // TODO add your handling code here:
+      
+    }//GEN-LAST:event_jTabbedPane1StateChanged
     private void createTab() {
        String query="create table "+tname.getText().toString()+" (";
        for(int i=0;i<creater.size();i++){
@@ -815,20 +884,26 @@ public class Main extends javax.swing.JFrame {
     
     private void insertTab() {
        String query="insert into "+jComboBox1.getSelectedItem().toString()+" values (";
+     
        for(int i=0;i<inserter.size();i++){
            Map.Entry<JLabel,JTextField> entry=inserter.get(i);
-           System.out.println(entry.getValue().toString() + " " +entry.getKey().getText().toString()  );
-           if(isNumeric(entry.getKey().getText().toString())){
-               query+=Integer.parseInt(entry.getKey().getText().toString())+",";
+           System.out.println(entry.getValue().getText().toString()+ " " +entry.getKey().getText().toString()  );
+          // if(entry.getValue().getText().toString().length()>0){
+            //    query+=entry.getKey().getText().toString()+" "+entry.getValue().getSelectedItem().toString()+", ";
+          // }
+           if(isNumeric(entry.getValue().getText().toString())){
+               query+=Integer.parseInt(entry.getValue().getText().toString())+",";
            }
            else
-               query+="'"+Integer.parseInt(entry.getKey().getText().toString())+"'"+",";
+               query+="'"+entry.getValue().getText().toString()+"'"+", ";
         }
+         
        query=query.substring(0, query.length()-2);
        query+=")";
        fired.setText(query);
        con.setTable(query);
        status.setText("Values Inserted");
+       
        System.out.println(query);
                   
     }
@@ -923,6 +998,7 @@ public class Main extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton colwise;
     private javax.swing.JTextField fired;
+    private javax.swing.JScrollPane insert;
     private javax.swing.JScrollPane internal;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -952,6 +1028,8 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane10;
     private javax.swing.JScrollPane jScrollPane2;
@@ -973,6 +1051,7 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JRadioButton selectall;
     private javax.swing.JLabel status;
     private javax.swing.JTextField tname;
+    private javax.swing.JScrollPane update;
     private javax.swing.JTextArea where;
     // End of variables declaration//GEN-END:variables
 
